@@ -52,7 +52,7 @@ export const prerender = true;
             {
                 SHOW_BUY_BUTTON && (
                     <BuyButton server:defer buy={buy}>
-                        <div slot="fallback" class="w-full bg-gray-200 py-2 font-bold rounded-lg text-center animate-pulse relative overflow-hidden">
+                        <div slot="fallback" class="w-full bg-gray-200 py-2 font-bold rounded-lg text-center animate-pulse relative overflow-hidden py-2">
                             <div class="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-[shimmer_1.5s_infinite]" />
                         </div>
                     </BuyButton>
