@@ -1,11 +1,65 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const books = await getCollection("books");
+
+export const prerender = true
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="DevBooks - A place for developers to learn and grow" >
+
+	<main class="w-fill flex flex-col gap-4 bg-gray-100">
+
+		<header class="flex justify-center items-center bg-white flex-col py-4 border-b border-b-gray-200">
+			<h1 class="text-center text-7xl font-extrabold">DevBooks℗</h1>
+			<span>A place for developers to learn and grow</span>
+		</header>
+	
+		<section aria-label="Reccomended books for developers">
+			<div class="px-2 mx-auto max-w-screen-xl mb-6">
+				<div class="flex flex-wrap gap-4 px-8">
+					{
+						books.map((book: { slug: any; data: any }) => {
+							const { slug, data } = book;
+							const {
+								title,
+								author,
+								img,
+								readtime,
+								description,
+								buy,
+							} = data;
+	
+							
+	
+							return (
+								<article class="height-60 p-4  bg-white border border-gray-200 rounded-lg flex grow flex-col gap-2 width-fit">
+									<a href={`/libro/${slug}`} class="mb-2 xl:mb-0 transition hover:scale-95 " >
+										<img 
+											src={`/${img}`} 
+											alt={title} 
+											class="w-full mb-2 h-80 object-cover rounded"
+										/>
+									</a>
+
+									<div class="flex flex-col gap-2 justify-center">
+										<h2 class="text-xl font-bold leading-tight">
+											{title}
+										</h2>
+
+										<p class="text-base text-gray-500">{description}</p>
+
+										<span class="text-xs">⌛ Lectura en {readtime} minutos.</span>
+
+									</div>
+								</article>
+							);
+						})
+					}
+				</div>
+			</div>
+		</section>
+	</main>
+	
 </Layout>

@@ -1,0 +1,59 @@
+---
+import { getCollection,render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { SHOW_BUY_BUTTON } from "astro:env/server";
+import AmazonLogo from "../../components/AmazonLogo.astro";
+import BookScore from "../../components/BookScore.astro";
+import BuyButton from "../../components/BuyButton.astro";
+
+
+export async function getStaticPaths() {
+    const books = await getCollection("books");
+    return books.map(book=>({
+        params:{
+            id:book.slug
+        },
+        props: {
+            book
+        }
+    }))
+}
+
+const {book} = Astro.props;
+const {data,slug} = book;
+const {title, author, img, readtime, description, buy} = data;
+const {Content} = await render(book);
+export const prerender = true;
+---
+
+
+<Layout title={title}>
+    <section class="flex gap-4 px-8 bg-gray-200 py-4 bg-white">
+        <aside class="flex flex-col items-center gap-4">
+            <a href="/"  class="bg-gray-200 font-bold rounded-lg px-4 py-2 w-full text-center hover:bg-gray-300 active:bg-gray-400 ">Volver atrás</a>
+            <img 
+                src={`/${img}`} 
+                alt={title} 
+                class="rounded w-fill h-auto"
+            >
+        </aside>
+
+
+        <main>
+            <div class="flex gap-4 items-center ">
+                <h1 class="text-2xl font-bold">{title}</h1>
+                <BookScore server:defer id={slug}>
+                    <!-- Fallback -->
+                    <span slot="fallback" class="opacity-70">Cargando puntuación...</span>
+                </BookScore>
+            </div>
+            
+            <div class="text-sm text-gray-600 mb-4 mt-2">
+                <Content/>
+            </div>
+            {
+                SHOW_BUY_BUTTON && <BuyButton server:defer buy={buy}/>
+            }
+        </main>
+    </section>
+</Layout>
